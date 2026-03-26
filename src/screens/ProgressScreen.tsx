@@ -6,6 +6,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../theme/colors';
+import { usePathway } from '../context/PathwayContext';
 
 const { width } = Dimensions.get('window');
 const BADGE_SIZE_LG = (width - 64) / 2;   // 2-col
@@ -106,8 +107,53 @@ const bdg = StyleSheet.create({
 
 // ─── Overview tab ─────────────────────────────────────────────────────────
 
-const OverviewTab = () => (
+const OverviewTab = () => {
+  const { ownedPathways, scenario } = usePathway();
+  return (
   <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingBottom: 100 }}>
+    {/* Pathways */}
+    {ownedPathways.length > 0 && (
+      <View style={{ marginBottom: 20 }}>
+        <Text style={ov.sectionTitle}>Pathways</Text>
+        {ownedPathways.map(pw => {
+          const progress = scenario.progressMap[pw.id];
+          if (!progress) return null;
+          const completedCount = progress.completedPrograms.length;
+          const percentage = Math.round((completedCount / pw.totalPrograms) * 100);
+          return (
+            <View key={pw.id} style={{
+              backgroundColor: colors.backgroundCard, borderRadius: 14, padding: 16,
+              borderWidth: 1, borderColor: colors.border, marginBottom: 10,
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+            }}>
+              <Text style={{ fontSize: 24 }}>{pw.icon}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>{pw.name} Pathway</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                  <View style={{ flex: 1, height: 4, backgroundColor: colors.backgroundElevated, borderRadius: 2 }}>
+                    <View style={{ width: `${percentage}%`, height: 4, borderRadius: 2, backgroundColor: pw.accentColor }} />
+                  </View>
+                  <Text style={{ fontSize: 12, color: colors.textMuted }}>{percentage}%</Text>
+                </View>
+                {progress.earnedBadges.length > 0 && (
+                  <View style={{ flexDirection: 'row', gap: 4, marginTop: 6 }}>
+                    {progress.earnedBadges.map((badge, i) => (
+                      <View key={i} style={{
+                        backgroundColor: 'rgba(245,200,66,0.15)', paddingHorizontal: 8, paddingVertical: 3,
+                        borderRadius: 10,
+                      }}>
+                        <Text style={{ fontSize: 10, color: colors.gold }}>{'\u{1F3C6}'} {badge}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    )}
+
     {/* Streak card */}
     <View style={ov.streakCard}>
       <View style={ov.streakLeft}>
@@ -170,7 +216,7 @@ const OverviewTab = () => (
       ))}
     </View>
   </ScrollView>
-);
+); };
 
 const ov = StyleSheet.create({
   streakCard: {
