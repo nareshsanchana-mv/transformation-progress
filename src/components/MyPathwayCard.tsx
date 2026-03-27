@@ -27,6 +27,7 @@ export default function MyPathwayCard({ onSwitchPress }: MyPathwayCardProps) {
     : 0;
   const totalInPhase = currentPhase?.programs.length ?? 0;
   const phaseProgress = totalInPhase > 0 ? completedInPhase / totalInPhase : 0;
+  const currentProgram = currentPhase?.programs.find(p => p.questId === activeProgress.currentProgramId);
 
   return (
     <TouchableOpacity
@@ -54,17 +55,24 @@ export default function MyPathwayCard({ onSwitchPress }: MyPathwayCardProps) {
       </View>
 
       {/* Hero lesson block */}
-      <View style={[styles.heroBlock, { backgroundColor: activePathway.gradientColors[0] }]}>
-        <Text style={styles.durationBadge}>{Math.round(activeProgress.currentProgramLessonCount * 0.75)} min</Text>
-        <Text style={styles.upNext}>UP NEXT</Text>
-        <Text style={styles.lessonTitle} numberOfLines={1}>{activeProgress.currentLessonTitle}</Text>
-        <Text style={styles.lessonMeta}>
-          {activeProgress.currentProgramTitle} · Lesson {activeProgress.currentLessonNumber} of {activeProgress.currentProgramLessonCount}
-        </Text>
-        <TouchableOpacity style={styles.continueBtn} activeOpacity={0.8}>
-          <Ionicons name="play" size={16} color="#fff" />
-          <Text style={styles.continueBtnText}>Continue</Text>
-        </TouchableOpacity>
+      <View style={styles.heroBlock}>
+        <Image
+          source={{ uri: currentProgram?.image ?? '' }}
+          style={styles.heroImage}
+        />
+        <View style={styles.heroOverlay} />
+        <View style={styles.heroContent}>
+          <Text style={styles.durationBadge}>{Math.round(activeProgress.currentProgramLessonCount * 0.75)} min</Text>
+          <Text style={styles.upNext}>UP NEXT</Text>
+          <Text style={styles.lessonTitle} numberOfLines={1}>{activeProgress.currentLessonTitle}</Text>
+          <Text style={styles.lessonMeta}>
+            {activeProgress.currentProgramTitle} · Lesson {activeProgress.currentLessonNumber} of {activeProgress.currentProgramLessonCount}
+          </Text>
+          <TouchableOpacity style={styles.continueBtn} activeOpacity={0.8}>
+            <Ionicons name="play" size={16} color="#fff" />
+            <Text style={styles.continueBtnText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Program covers */}
@@ -197,15 +205,37 @@ const styles = StyleSheet.create({
   heroBlock: {
     marginHorizontal: 12,
     borderRadius: 14,
-    padding: 16,
+    height: 160,
     position: 'relative',
     overflow: 'hidden',
+  },
+  heroImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  heroOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+  },
+  heroContent: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'flex-end',
   },
   durationBadge: {
     position: 'absolute',
     top: 10,
     right: 10,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 10,
