@@ -4,7 +4,7 @@ import { View, Text, ScrollView, Image, StyleSheet, Dimensions, TouchableOpacity
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../theme/colors';
-import { Pathway, UserPathwayProgress, SOCIAL_PROOF, getPercentile } from '../data/pathwayData';
+import { Pathway, UserPathwayProgress, SOCIAL_PROOF, getPercentile, getNextMilestonePercentile, getLessonsToNextMilestone, COMPARATIVE_STATS } from '../data/pathwayData';
 import JourneyWaypoint from './JourneyWaypoint';
 import type { RootStackParamList } from '../navigation/RootNavigator';
 
@@ -200,6 +200,36 @@ export default function JourneyMapCard({ pathway, progress }: JourneyMapCardProp
           </View>
         </View>
       </View>
+
+      {/* Comparative user stats */}
+      {completedCount > 0 && (
+        <View style={styles.comparativeSection}>
+          <View style={styles.comparativeRow}>
+            <View style={[styles.comparativeIcon, { backgroundColor: 'rgba(123,104,238,0.15)' }]}>
+              <Text style={{ fontSize: 12 }}>{'\u{1F3C6}'}</Text>
+            </View>
+            <Text style={styles.comparativeText}>
+              You're in the <Text style={[styles.comparativeHighlight, { color: pathway.accentColor }]}>top {100 - percentile}%</Text> of {pathway.name} learners
+            </Text>
+          </View>
+          <View style={styles.comparativeRow}>
+            <View style={[styles.comparativeIcon, { backgroundColor: 'rgba(0,212,170,0.15)' }]}>
+              <Text style={{ fontSize: 12 }}>{'\u{23F1}'}</Text>
+            </View>
+            <Text style={styles.comparativeText}>
+              <Text style={styles.comparativeHighlight}>{COMPARATIVE_STATS.paceCompletion}%</Text> at your stage finish their next program within <Text style={styles.comparativeHighlight}>{COMPARATIVE_STATS.paceWeeks} weeks</Text>
+            </Text>
+          </View>
+          <View style={styles.comparativeRow}>
+            <View style={[styles.comparativeIcon, { backgroundColor: 'rgba(245,200,66,0.15)' }]}>
+              <Text style={{ fontSize: 12 }}>{'\u{1F3AF}'}</Text>
+            </View>
+            <Text style={styles.comparativeText}>
+              <Text style={[styles.comparativeHighlight, { color: colors.gold }]}>{getLessonsToNextMilestone(completedCount, pathway.totalPrograms)} more lessons</Text> to reach top {100 - getNextMilestonePercentile(percentile)}%
+            </Text>
+          </View>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }
@@ -422,6 +452,38 @@ const styles = StyleSheet.create({
     fontSize: 7,
     color: colors.teal,
     fontWeight: '500',
+  },
+
+  // Comparative user stats
+  comparativeSection: {
+    paddingHorizontal: 16,
+    paddingTop: 4,
+    paddingBottom: 14,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    gap: 10,
+  },
+  comparativeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  comparativeIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  comparativeText: {
+    flex: 1,
+    fontSize: 12,
+    color: colors.textSecondary,
+    lineHeight: 16,
+  },
+  comparativeHighlight: {
+    fontWeight: '700',
+    color: '#fff',
   },
 
 });

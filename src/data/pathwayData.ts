@@ -451,3 +451,27 @@ export function getPercentile(completedPrograms: number, totalPrograms: number):
   // Mock percentile curve: early completers are ahead of more people
   return Math.min(99, Math.round((1 - Math.pow(1 - ratio, 1.5)) * 100));
 }
+
+export function getNextMilestonePercentile(currentPercentile: number): number {
+  // Next round milestone: 20, 30, 40, ... 90
+  const next = Math.ceil((currentPercentile + 1) / 10) * 10;
+  return Math.min(90, next);
+}
+
+export function getLessonsToNextMilestone(completedPrograms: number, totalPrograms: number): number {
+  if (totalPrograms === 0) return 0;
+  const currentPercentile = getPercentile(completedPrograms, totalPrograms);
+  const target = getNextMilestonePercentile(currentPercentile);
+  // Estimate lessons needed by inverting the percentile curve
+  const targetRatio = 1 - Math.pow(1 - target / 100, 1 / 1.5);
+  const currentRatio = completedPrograms / totalPrograms;
+  const remainingRatio = Math.max(0, targetRatio - currentRatio);
+  return Math.max(1, Math.ceil(remainingRatio * totalPrograms * 15)); // ~15 lessons per program
+}
+
+export const COMPARATIVE_STATS = {
+  paceCompletion: 68, // "68% at your stage finish next program within 2 weeks"
+  paceWeeks: 2,
+  avgLessonsPerWeek: 4.2,
+  consistencyRanking: 73, // "More consistent than 73% this month"
+};
