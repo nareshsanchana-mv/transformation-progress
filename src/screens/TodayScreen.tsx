@@ -105,21 +105,6 @@ export default function TodayScreen() {
           <Text style={styles.greetingText}>Hi, {userName}</Text>
         </View>
 
-        {/* Day Streak */}
-        <TouchableOpacity style={styles.streakCard} onPress={() => navigation.navigate('Progress' as never)}>
-          <View style={styles.streakIcon}>
-            <Ionicons name="flame" size={20} color={colors.textMuted} />
-          </View>
-          <Text style={styles.streakNumber}>{dayStreak}</Text>
-          <Text style={styles.streakLabel}>DAY STREAK</Text>
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={colors.textMuted}
-            style={styles.streakArrow}
-          />
-        </TouchableOpacity>
-
         {/* My Pathway */}
         {hasPathway && (
           <MyPathwayCard onSwitchPress={() => setShowSwitcher(true)} />
@@ -603,38 +588,6 @@ const styles = StyleSheet.create({
   greetingText: {
     ...typography.h1,
     color: colors.textPrimary,
-  },
-  streakCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.backgroundCard,
-    marginHorizontal: 16,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
-  streakIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  streakNumber: {
-    ...typography.h3,
-    color: colors.textPrimary,
-    marginRight: 8,
-  },
-  streakLabel: {
-    ...typography.caption,
-    color: colors.textMuted,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-  },
-  streakArrow: {
-    marginLeft: 'auto',
   },
   // Eve Section (L1)
   eveSection: {

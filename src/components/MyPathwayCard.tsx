@@ -117,34 +117,33 @@ export default function MyPathwayCard({ onSwitchPress }: MyPathwayCardProps) {
         </ScrollView>
       )}
 
-      {/* Bottom compact row */}
-      <View style={styles.bottomRow}>
-        <View style={styles.phaseInfo}>
-          <Text style={styles.phaseText}>
-            {currentPhase?.icon} {currentPhase?.name} · {completedInPhase}/{totalInPhase} programs
-          </Text>
-          <View style={styles.miniProgressTrack}>
-            <View style={[styles.miniProgressFill, { width: `${phaseProgress * 100}%` }]} />
-          </View>
+      {/* Streak banner */}
+      <View style={styles.streakBanner}>
+        <View style={styles.streakBadge}>
+          <Text style={styles.streakFlame}>{'\u{1F525}'}</Text>
+          <Text style={styles.streakCount}>{activeProgress.pathwayStreak}</Text>
         </View>
-        <View style={styles.statsRow}>
-          {activeProgress.pathwayStreak > 0 && (
-            <Text style={styles.statText}>
-              <Text style={{ color: colors.gold }}>{'\u{1F525}'} {activeProgress.pathwayStreak}</Text>
-            </Text>
-          )}
-          <Text style={styles.statText}>
-            {activeProgress.weeklyLessonCount}/{activeProgress.weeklyLessonGoal}{' '}
-            <Text style={styles.statLabel}>wk</Text>
+        <View style={styles.streakInfo}>
+          <Text style={styles.streakTitle}>
+            {activeProgress.pathwayStreak > 0 ? `${activeProgress.pathwayStreak} day streak` : 'Start your streak!'}
+          </Text>
+          <Text style={styles.streakSub}>
+            {activeProgress.weeklyLessonCount}/{activeProgress.weeklyLessonGoal} lessons this week
           </Text>
         </View>
+        <Text style={styles.socialPill}>
+          {SOCIAL_PROOF.activeLearners.toLocaleString()} active
+        </Text>
       </View>
 
-      {/* Social proof */}
-      <View style={styles.socialRow}>
-        <Text style={styles.socialText}>
-          {SOCIAL_PROOF.activeLearners.toLocaleString()} active learners
+      {/* Phase progress */}
+      <View style={styles.bottomRow}>
+        <Text style={styles.phaseText}>
+          {currentPhase?.icon} {currentPhase?.name} · {completedInPhase}/{totalInPhase} programs
         </Text>
+        <View style={styles.miniProgressTrack}>
+          <View style={[styles.miniProgressFill, { width: `${phaseProgress * 100}%` }]} />
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -339,17 +338,61 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
 
-  // Bottom row
-  bottomRow: {
+  // Streak banner
+  streakBanner: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 12,
     paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(245,200,66,0.06)',
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    gap: 10,
   },
-  phaseInfo: {
+  streakBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245,200,66,0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    gap: 4,
+  },
+  streakFlame: {
+    fontSize: 16,
+  },
+  streakCount: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: colors.gold,
+  },
+  streakInfo: {
     flex: 1,
-    marginRight: 12,
+  },
+  streakTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  streakSub: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginTop: 1,
+  },
+  socialPill: {
+    fontSize: 10,
+    color: colors.textMuted,
+    backgroundColor: colors.backgroundElevated,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+
+  // Bottom row (phase progress)
+  bottomRow: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
   },
   phaseText: {
     fontSize: 12,
@@ -361,43 +404,11 @@ const styles = StyleSheet.create({
     height: 4,
     backgroundColor: colors.progressTrack,
     borderRadius: 2,
-    width: 120,
     overflow: 'hidden',
   },
   miniProgressFill: {
     height: 4,
     borderRadius: 2,
     backgroundColor: colors.teal,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  statText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#fff',
-  },
-  statLabel: {
-    fontSize: 10,
-    color: colors.textMuted,
-    fontWeight: '400',
-  },
-
-  // Social proof
-  socialRow: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-  },
-  socialText: {
-    fontSize: 11,
-    color: colors.textMuted,
-    backgroundColor: colors.backgroundElevated,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
-    overflow: 'hidden',
   },
 });
