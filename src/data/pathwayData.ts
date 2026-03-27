@@ -426,7 +426,28 @@ export const PATHWAY_SCENARIOS: PathwayScenario[] = [
 
 export const SOCIAL_PROOF = {
   activeLearners: 1247,
-  phaseCompletionRate: 73, // percent
-  peerPercentile: 27, // "Top 27%"
-  forwardMotivation: 89, // "89% who reach Phase 2 finish the Pathway"
+  phaseCompletionRate: 73,
+  peerPercentile: 27,
+  forwardMotivation: 89,
+  phaseCompletions: {
+    'mf-foundation': 4312,
+    'mf-deepening': 2891,
+    'mf-mastery': 1204,
+    'mf-integration': 687,
+    'lg-foundation': 1893,
+    'lg-mastery': 742,
+  } as Record<string, number>,
+  avgWeeksToReach: {
+    'mf-deepening': 6,
+    'mf-mastery': 14,
+    'mf-integration': 24,
+    'lg-mastery': 8,
+  } as Record<string, number>,
 };
+
+export function getPercentile(completedPrograms: number, totalPrograms: number): number {
+  if (totalPrograms === 0) return 0;
+  const ratio = completedPrograms / totalPrograms;
+  // Mock percentile curve: early completers are ahead of more people
+  return Math.min(99, Math.round((1 - Math.pow(1 - ratio, 1.5)) * 100));
+}
